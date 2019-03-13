@@ -43,6 +43,10 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
         [self evalJavascript:call completionHandler:^(NSString * response) {
             result(response);
         }];
+    } else if ([@"getUserAgent" isEqualToString:call.method]) {
+        [self getUserAgent:call completionHandler:^(NSString * response) {
+            result(response);
+        }];
     } else if ([@"resize" isEqualToString:call.method]) {
         [self resize:call];
         result(nil);
@@ -169,6 +173,13 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     } else {
         completionHandler(nil);
     }
+}
+
+- (void)getUserAgent:(FlutterMethodCall*)call
+     completionHandler:(void (^_Nullable)(NSString * response))completionHandler {
+    UIWebView* webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    NSString* agent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+    completionHandler([NSString stringWithFormat:@"%@", agent]);
 }
 
 - (void)resize:(FlutterMethodCall*)call {
