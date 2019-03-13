@@ -77,11 +77,13 @@ class WebviewManager {
     Activity activity;
     ResultHandler resultHandler;
 
-    WebviewManager(final Activity activity) {
+    WebviewManager(final Activity activity, boolean enableAppScheme) {
         this.webView = new ObservableWebView(activity);
         this.activity = activity;
         this.resultHandler = new ResultHandler();
-        WebViewClient webViewClient = new BrowserClient();
+        WebViewClient webViewClient = new BrowserClient(enableAppScheme);
+
+
         webView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -206,7 +208,8 @@ class WebviewManager {
             boolean supportMultipleWindows,
             boolean appCacheEnabled,
             boolean allowFileURLs,
-            boolean geolocationEnabled
+            boolean geolocationEnabled,
+            int minFontSize
     ) {
         webView.getSettings().setJavaScriptEnabled(withJavascript);
         webView.getSettings().setBuiltInZoomControls(withZoom);
@@ -220,6 +223,8 @@ class WebviewManager {
 
         webView.getSettings().setAllowFileAccessFromFileURLs(allowFileURLs);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(allowFileURLs);
+        webView.getSettings().setMinimumFontSize(minFontSize);
+        webView.getSettings().setMinimumLogicalFontSize(minFontSize);
 
         if (geolocationEnabled) {
             webView.getSettings().setGeolocationEnabled(true);
@@ -264,12 +269,6 @@ class WebviewManager {
 
     void reloadUrl(String url) {
         webView.loadUrl(url);
-    }
-
-    void setMinimumFontSize(MethodCall call, final MethodChannel.Result result) {
-        int size = call.argument("size");
-        webView.getSettings().setMinimumFontSize(size);
-        webView.getSettings().setMinimumLogicalFontSize(size);
     }
 
     void close(MethodCall call, MethodChannel.Result result) {

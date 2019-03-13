@@ -78,9 +78,6 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
             case "cleanCookies":
                 cleanCookies(call, result);
                 break;
-            case "setMinimumFontSize":
-                setMinimumFontSize(call, result);
-                break;
             case "getUserAgent":
                 getUserAgent(call, result);
                 break;
@@ -105,9 +102,11 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         boolean scrollBar = call.argument("scrollBar");
         boolean allowFileURLs = call.argument("allowFileURLs");
         boolean geolocationEnabled = call.argument("geolocationEnabled");
+        boolean enableAppScheme = call.argument("enableAppScheme");
+        int minFontSize= call.argument("minFontSize");
 
         if (webViewManager == null || webViewManager.closed == true) {
-            webViewManager = new WebviewManager(activity);
+            webViewManager = new WebviewManager(activity, enableAppScheme);
         }
 
         FrameLayout.LayoutParams params = buildLayoutParams(call);
@@ -127,7 +126,8 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 supportMultipleWindows,
                 appCacheEnabled,
                 allowFileURLs,
-                geolocationEnabled
+                geolocationEnabled,
+                minFontSize
         );
         result.success(null);
     }
@@ -207,12 +207,6 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
     private void eval(MethodCall call, final MethodChannel.Result result) {
         if (webViewManager != null) {
             webViewManager.eval(call, result);
-        }
-    }
-
-    private void setMinimumFontSize(MethodCall call, final MethodChannel.Result result) {
-        if (webViewManager != null) {
-            webViewManager.setMinimumFontSize(call, result);
         }
     }
 

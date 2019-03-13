@@ -14,9 +14,20 @@ import java.util.Map;
  */
 
 public class BrowserClient extends WebViewClient {
+    private boolean allowCustomSchema = false;
+
     public BrowserClient() {
         super();
     }
+
+    public BrowserClient(boolean allowCustomSchema) {
+        super();
+        this.allowCustomSchema = allowCustomSchema;
+    }
+
+
+
+
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -51,7 +62,7 @@ public class BrowserClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        if (!request.getUrl().toString().startsWith("http") ) {
+        if (allowCustomSchema && (!request.getUrl().toString().startsWith("http") && !request.getUrl().toString().startsWith("file") && !request.getUrl().toString().startsWith("about")) ) {
             Map<String, Object> data = new HashMap<>();
             data.put("url", request.getUrl().toString());
 

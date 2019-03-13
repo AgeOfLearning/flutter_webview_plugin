@@ -95,6 +95,7 @@ class FlutterWebviewPlugin {
   /// - [withLocalUrl]: allow url as a local path
   ///     Allow local files on iOs > 9.0
   /// - [scrollBar]: enable or disable scrollbar
+  /// - [minFontSize]: Android only: set minimum font size
   Future<Null> launch(String url, {
     Map<String, String> headers,
     bool withJavascript,
@@ -112,6 +113,7 @@ class FlutterWebviewPlugin {
     bool appCacheEnabled,
     bool allowFileURLs,
     bool geolocationEnabled,
+    int minFontSize,
   }) async {
     final args = <String, dynamic>{
       'url': url,
@@ -129,6 +131,7 @@ class FlutterWebviewPlugin {
       'appCacheEnabled': appCacheEnabled ?? false,
       'allowFileURLs': allowFileURLs ?? false,
       'geolocationEnabled': geolocationEnabled ?? false,
+      'minFontSize': minFontSize ?? 1,
     };
 
     if (headers != null) {
@@ -150,13 +153,6 @@ class FlutterWebviewPlugin {
   Future<String> evalJavascript(String code) async {
     final res = await _channel.invokeMethod('eval', {'code': code});
     return res;
-  }
-
-  /// Set minimum font size on android only
-  Future<void> setMinimumFontSize(int size) async {
-    if (Platform.isAndroid) {
-      await _channel.invokeMethod('setMinimumFontSize', {'size': size});
-    }
   }
 
   ///Get userAgent
