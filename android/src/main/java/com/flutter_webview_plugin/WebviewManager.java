@@ -266,6 +266,12 @@ class WebviewManager {
         webView.loadUrl(url);
     }
 
+    void setMinimumFontSize(MethodCall call, final MethodChannel.Result result) {
+        int size = call.argument("size");
+        webView.getSettings().setMinimumFontSize(size);
+        webView.getSettings().setMinimumLogicalFontSize(size);
+    }
+
     void close(MethodCall call, MethodChannel.Result result) {
         if (webView != null) {
             ViewGroup vg = (ViewGroup) (webView.getParent());

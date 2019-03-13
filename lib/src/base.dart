@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -149,6 +150,19 @@ class FlutterWebviewPlugin {
   Future<String> evalJavascript(String code) async {
     final res = await _channel.invokeMethod('eval', {'code': code});
     return res;
+  }
+
+  /// Set minimum font size on android only
+  Future<void> setMinimumFontSize(int size) async {
+    if (Platform.isAndroid) {
+      await _channel.invokeMethod('setMinimumFontSize', {'size': size});
+    }
+  }
+
+  ///Get userAgent
+  Future<String> getUserAgent() async {
+    final String userAgent = await _channel.invokeMethod('getUserAgent');
+    return userAgent;
   }
 
   /// Close the Webview

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.view.Display;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
@@ -76,6 +77,12 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 break;
             case "cleanCookies":
                 cleanCookies(call, result);
+                break;
+            case "setMinimumFontSize":
+                setMinimumFontSize(call, result);
+                break;
+            case "getUserAgent":
+                getUserAgent(call, result);
                 break;
             default:
                 result.notImplemented();
@@ -201,6 +208,18 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         if (webViewManager != null) {
             webViewManager.eval(call, result);
         }
+    }
+
+    private void setMinimumFontSize(MethodCall call, final MethodChannel.Result result) {
+        if (webViewManager != null) {
+            webViewManager.setMinimumFontSize(call, result);
+        }
+    }
+
+    private void getUserAgent(MethodCall call, final MethodChannel.Result result) {
+        //creating a new instance to access useragent without loading a hidden webview url
+        String userAgent = new WebView(activity).getSettings().getUserAgentString();
+        result.success(userAgent);
     }
 
     private void resize(MethodCall call, final MethodChannel.Result result) {
