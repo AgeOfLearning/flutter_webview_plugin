@@ -244,6 +244,12 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
 - (void)cleanCookies {
     [[NSURLSession sharedSession] resetWithCompletionHandler:^{
         }];
+    
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [storage cookies]) {
+        [storage deleteCookie:cookie];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark -- WkWebView Delegate
