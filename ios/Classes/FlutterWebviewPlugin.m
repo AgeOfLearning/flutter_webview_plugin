@@ -93,8 +93,7 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     }
 
     if (clearCookies != (id)[NSNull null] && [clearCookies boolValue]) {
-        [[NSURLSession sharedSession] resetWithCompletionHandler:^{
-        }];
+        [self cleanCookies];
     }
 
     if (userAgent != (id)[NSNull null]) {
