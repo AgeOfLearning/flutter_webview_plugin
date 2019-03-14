@@ -245,11 +245,10 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     [[NSURLSession sharedSession] resetWithCompletionHandler:^{
         }];
     
-    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    for (NSHTTPCookie *cookie in [storage cookies]) {
-        [storage deleteCookie:cookie];
-    }
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSString *libraryPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *cookiesFolderPath = [libraryPath stringByAppendingString:@"/Cookies"];
+    NSError *errors;
+    [[NSFileManager defaultManager] removeItemAtPath:cookiesFolderPath error:&errors];
 }
 
 #pragma mark -- WkWebView Delegate
