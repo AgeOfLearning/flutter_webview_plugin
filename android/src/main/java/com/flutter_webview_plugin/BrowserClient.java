@@ -60,11 +60,12 @@ public class BrowserClient extends WebViewClient {
         FlutterWebviewPlugin.channel.invokeMethod("onHttpError", data);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        if (allowCustomSchema && (!request.getUrl().toString().startsWith("http") && !request.getUrl().toString().startsWith("file") && !request.getUrl().toString().startsWith("about")) ) {
+    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        if (allowCustomSchema && (!url.startsWith("http") && !url.startsWith("file") && !url.startsWith("about")) ) {
             Map<String, Object> data = new HashMap<>();
-            data.put("url", request.getUrl().toString());
+            data.put("url", url);
 
             FlutterWebviewPlugin.channel.invokeMethod("onUrlChanged", data);
             return true;
