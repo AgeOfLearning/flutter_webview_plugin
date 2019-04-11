@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Cookie;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class WebviewScaffold extends StatefulWidget {
     this.clearCache,
     this.clearCookies,
     this.enableAppScheme,
+    this.cookies,
     this.userAgent,
     this.primary = true,
     this.persistentFooterButtons,
@@ -40,6 +42,7 @@ class WebviewScaffold extends StatefulWidget {
   final bool clearCache;
   final bool clearCookies;
   final bool enableAppScheme;
+  final List<Cookie> cookies;
   final String userAgent;
   final bool primary;
   final List<Widget> persistentFooterButtons;
@@ -109,6 +112,7 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
               clearCookies: widget.clearCookies,
               hidden: widget.hidden,
               enableAppScheme: widget.enableAppScheme,
+              cookies: widget.cookies,
               userAgent: widget.userAgent,
               rect: _rect,
               withZoom: widget.withZoom,

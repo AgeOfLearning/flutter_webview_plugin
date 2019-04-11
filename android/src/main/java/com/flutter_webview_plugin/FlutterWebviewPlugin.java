@@ -1,6 +1,5 @@
 package com.flutter_webview_plugin;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +7,8 @@ import android.graphics.Point;
 import android.view.Display;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.webkit.CookieManager;
-import android.webkit.ValueCallback;
-import android.os.Build;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
@@ -90,6 +87,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
     private void openUrl(MethodCall call, MethodChannel.Result result) {
         boolean hidden = call.argument("hidden");
         String url = call.argument("url");
+        ArrayList<String> cookies = call.argument("cookies");
         String userAgent = call.argument("userAgent");
         boolean withJavascript = call.argument("withJavascript");
         boolean clearCache = call.argument("clearCache");
@@ -117,6 +115,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 clearCache,
                 hidden,
                 clearCookies,
+                cookies,
                 userAgent,
                 url,
                 headers,
@@ -239,16 +238,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
     }
 
     private void cleanCookies(MethodCall call, final MethodChannel.Result result) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
-                @Override
-                public void onReceiveValue(Boolean aBoolean) {
-
-                }
-            });
-        } else {
-            CookieManager.getInstance().removeAllCookie();
-        }
+        WebviewManager.clearCookies();
         result.success(null);
     }
 

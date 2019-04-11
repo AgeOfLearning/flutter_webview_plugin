@@ -1,10 +1,10 @@
 package com.flutter_webview_plugin;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.net.Uri.Builder;
 import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,6 +18,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -176,17 +177,32 @@ class WebviewManager {
         });
     }
 
-    private void clearCookies() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
-                @Override
-                public void onReceiveValue(Boolean aBoolean) {
-
-                }
-            });
-        } else {
-            CookieManager.getInstance().removeAllCookie();
+    static void setCookies(String url, ArrayList<String> cookies) {
+        String cookieUrl = getCookieUrl(url);
+        CookieManager cm = CookieManager.getInstance();
+        for (String cookie : cookies) {
+            cm.setCookie(cookieUrl, cookie);
         }
+        cm.flush();
+    }
+
+    static String getCookieUrl(String url) {
+        Uri uri = Uri.parse(url);
+        String scheme = uri.getScheme();
+        String authority = uri.getAuthority();
+
+        Builder builder = new Uri.Builder();
+        builder.scheme(scheme)
+                .authority(authority)
+                .path("/");
+
+        return builder.build().toString();
+    }
+
+    static void clearCookies() {
+        CookieManager cm = CookieManager.getInstance();
+        cm.removeAllCookies(null);
+        cm.flush();
     }
 
     private void clearCache() {
@@ -199,6 +215,7 @@ class WebviewManager {
             boolean clearCache,
             boolean hidden,
             boolean clearCookies,
+            ArrayList<String> cookies,
             String userAgent,
             String url,
             Map<String, String> headers,
@@ -250,6 +267,10 @@ class WebviewManager {
 
         if (clearCookies) {
             clearCookies();
+        }
+
+        if (cookies != null && !cookies.isEmpty()) {
+            setCookies(url, cookies);
         }
 
         if (userAgent != null) {
