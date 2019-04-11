@@ -97,6 +97,7 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
         [self cleanCookies];
     }
     
+    NSLog(@"COOKIES COUNT: %@", cookies.count);
     if(!cookies || !cookies.count) {
         [self setCookies:call.arguments[@"url"] :cookies];
     }
