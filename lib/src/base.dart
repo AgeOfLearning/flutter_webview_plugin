@@ -117,7 +117,7 @@ class FlutterWebviewPlugin {
     bool geolocationEnabled,
     int minFontSize,
   }) async {
-    final List<String> serializedCookies = cookies.map((cookie) => cookie.toString()).toList();
+    final List<String> serializedCookies = cookies?.map((cookie) => cookie.toString())?.toList();
 
     final args = <String, dynamic>{
       'url': url,
