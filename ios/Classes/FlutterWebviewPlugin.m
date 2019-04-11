@@ -97,8 +97,7 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
         [self cleanCookies];
     }
     
-    NSLog(@"COOKIES COUNT: %@", cookies.count);
-    if(!cookies || !cookies.count) {
+    if(cookies && cookies.count) {
         [self setCookies:call.arguments[@"url"] :cookies];
     }
 
@@ -250,7 +249,6 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     NSString* cookieUrl = [self getCookieUrl:url];
     NSURL *tempUrl = [NSURL URLWithString:cookieUrl];
     for(int i = 0; i < [cookies count]; i++){
-        NSLog(@"COOKIE:%@", [cookies objectAtIndex:i]);
         NSArray *splitCookie = [[cookies objectAtIndex: i] componentsSeparatedByString:@"="];
         NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
         [cookieProperties setObject: [splitCookie objectAtIndex: 0] forKey:NSHTTPCookieName];
