@@ -98,7 +98,7 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     }
     
     if(!cookies || !cookies.count) {
-        setCookies(url, cookies);
+        [self setCookies:call.arguments[@"url"] :cookies];
     }
 
     if (userAgent != (id)[NSNull null]) {
@@ -246,31 +246,31 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
 }
 
 - (void) setCookies : (NSString*)url : (NSArray*) cookies {
-    NSString* cookieUrl = getCookieUrl(url);
-    NSURL *url = [NSURL URLWithString:url];
+    NSString* cookieUrl = [self getCookieUrl:url];
+    NSURL *tempUrl = [NSURL URLWithString:cookieUrl];
     for(int i = 0; i < [cookies count]; i++){
-        NSArray *splitCookie = [[cookies objectAtIndex: init] componentsSeparatedByString:@"="];
+        NSArray *splitCookie = [[cookies objectAtIndex: i] componentsSeparatedByString:@"="];
         NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
         [cookieProperties setObject: [splitCookie objectAtIndex: 0] forKey:NSHTTPCookieName];
         [cookieProperties setObject: [splitCookie objectAtIndex: 1] forKey:NSHTTPCookieValue];
-        [cookieProperties setObject: [url host] forKey: NSHTTPCookieDomain];
-        [cookieProperties setObject: [url host] forKey: NSHTTPCookieOriginURL];
+        [cookieProperties setObject: [tempUrl host] forKey: NSHTTPCookieDomain];
+        [cookieProperties setObject: [tempUrl host] forKey: NSHTTPCookieOriginURL];
         [cookieProperties setObject: @"/" forKey: NSHTTPCookiePath];
-        [cookieProperties setObject: [[NSDate date] dateByAddingInterval: 31536000] forKey: NSHTTPCookieExpires];
+        [cookieProperties setObject: [[NSDate date] dateByAddingTimeInterval: 2629743] forKey: NSHTTPCookieExpires];
         NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties: cookieProperties];
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
-    }   
+    }
 }
 
-- (NSString *) getCookieUrl: (NSString*) url {
-    NSURL *url = [NSURL URLWithString:url];
+- (NSString*) getCookieUrl: (NSString*) cookieUrl {
+    NSURL *url = [NSURL URLWithString:cookieUrl];
     NSURLComponents *components = [[NSURLComponents alloc] init];
-    NSString *scheme = url.scheme;
-    NSString *host = url.host;
+    NSString *scheme = [url scheme];
+    NSString *host = [url host];
     components.scheme = scheme;
     components.host = host;
     components.path = @"/";
-    return components.URL;
+    return [components URL].absoluteString;
 }
 
 - (void)cleanCookies {
