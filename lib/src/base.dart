@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:io' show Cookie, Platform;
 import 'dart:ui';
-import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,6 +87,7 @@ class FlutterWebviewPlugin {
   /// - [rect]: show in rect, fullscreen if null
   /// - [enableAppScheme]: false will enable all schemes, true only for httt/https/about
   ///     android: Not implemented yet
+  /// - [cookies] An initial list of cookies to populate the Webview's cookiejar
   /// - [userAgent]: set the User-Agent of WebView
   /// - [withZoom]: enable zoom on webview
   /// - [withLocalStorage] enable localStorage API on Webview
@@ -104,6 +105,7 @@ class FlutterWebviewPlugin {
     bool hidden,
     bool enableAppScheme,
     Rect rect,
+    List<Cookie> cookies,
     String userAgent,
     bool withZoom,
     bool withLocalStorage,
@@ -115,6 +117,8 @@ class FlutterWebviewPlugin {
     bool geolocationEnabled,
     int minFontSize,
   }) async {
+    final List<String> serializedCookies = cookies?.map((cookie) => cookie.toString())?.toList();
+
     final args = <String, dynamic>{
       'url': url,
       'withJavascript': withJavascript ?? true,
@@ -122,6 +126,7 @@ class FlutterWebviewPlugin {
       'hidden': hidden ?? false,
       'clearCookies': clearCookies ?? false,
       'enableAppScheme': enableAppScheme ?? true,
+      'cookies': serializedCookies,
       'userAgent': userAgent,
       'withZoom': withZoom ?? false,
       'withLocalStorage': withLocalStorage ?? true,
