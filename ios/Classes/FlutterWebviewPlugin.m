@@ -96,8 +96,8 @@ static NSString *const CHANNEL_NAME = @"flutter_webview_plugin";
     if (clearCookies != (id)[NSNull null] && [clearCookies boolValue]) {
         [self cleanCookies];
     }
-    
-    if(cookies && cookies.count) {
+
+    if(cookies != (id)[NSNull null]) {
         [self setCookies:call.arguments[@"url"] :cookies];
     }
 
