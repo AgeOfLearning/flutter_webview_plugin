@@ -22,18 +22,20 @@ import io.flutter.plugin.common.PluginRegistry;
 public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.ActivityResultListener {
     private Activity activity;
     private WebviewManager webViewManager;
+    private Context context;
     static MethodChannel channel;
     private static final String CHANNEL_NAME = "flutter_webview_plugin";
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
         channel = new MethodChannel(registrar.messenger(), CHANNEL_NAME);
-        final FlutterWebviewPlugin instance = new FlutterWebviewPlugin(registrar.activity());
+        final FlutterWebviewPlugin instance = new FlutterWebviewPlugin(registrar.activity(),registrar.activeContext());
         registrar.addActivityResultListener(instance);
         channel.setMethodCallHandler(instance);
     }
 
-    private FlutterWebviewPlugin(Activity activity) {
+    private FlutterWebviewPlugin(Activity activity, Context context) {
         this.activity = activity;
+        this.context = context;
     }
 
     @Override
@@ -99,12 +101,15 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         Map<String, String> headers = call.argument("headers");
         boolean scrollBar = call.argument("scrollBar");
         boolean allowFileURLs = call.argument("allowFileURLs");
+        boolean useWideViewPort = call.argument("useWideViewPort");
+        String invalidUrlRegex = call.argument("invalidUrlRegex");
         boolean geolocationEnabled = call.argument("geolocationEnabled");
+        boolean debuggingEnabled = call.argument("debuggingEnabled");
         boolean enableAppScheme = call.argument("enableAppScheme");
         int minFontSize= call.argument("minFontSize");
 
         if (webViewManager == null || webViewManager.closed == true) {
-            webViewManager = new WebviewManager(activity, enableAppScheme);
+            webViewManager = new WebviewManager(activity, context);
         }
 
         FrameLayout.LayoutParams params = buildLayoutParams(call);
@@ -125,7 +130,10 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 supportMultipleWindows,
                 appCacheEnabled,
                 allowFileURLs,
+                useWideViewPort,
+                invalidUrlRegex,
                 geolocationEnabled,
+                debuggingEnabled,
                 minFontSize
         );
         result.success(null);
