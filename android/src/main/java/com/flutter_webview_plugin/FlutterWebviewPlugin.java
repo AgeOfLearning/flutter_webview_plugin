@@ -105,7 +105,6 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         String invalidUrlRegex = call.argument("invalidUrlRegex");
         boolean geolocationEnabled = call.argument("geolocationEnabled");
         boolean debuggingEnabled = call.argument("debuggingEnabled");
-        boolean enableAppScheme = call.argument("enableAppScheme");
         int minFontSize= call.argument("minFontSize");
 
         if (webViewManager == null || webViewManager.closed == true) {
