@@ -109,7 +109,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         int minFontSize= call.argument("minFontSize");
 
         if (webViewManager == null || webViewManager.closed == true) {
-            webViewManager = new WebviewManager(activity, context);
+            webViewManager = new WebviewManager(activity, context, enableAppScheme);
         }
 
         FrameLayout.LayoutParams params = buildLayoutParams(call);
