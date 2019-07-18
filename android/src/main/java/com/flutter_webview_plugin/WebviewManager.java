@@ -123,12 +123,12 @@ class WebviewManager {
     ResultHandler resultHandler;
     Context context;
 
-    WebviewManager(final Activity activity, final Context context, boolean enableAppScheme) {
+    WebviewManager(final Activity activity, final Context context) {
         this.webView = new ObservableWebView(activity);
         this.activity = activity;
         this.context = context;
         this.resultHandler = new ResultHandler();
-        webViewClient = new BrowserClient(enableAppScheme);
+        webViewClient = new BrowserClient();
 
         webView.setOnKeyListener(new View.OnKeyListener() {
             @Override

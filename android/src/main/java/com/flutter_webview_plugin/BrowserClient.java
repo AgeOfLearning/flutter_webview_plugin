@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 public class BrowserClient extends WebViewClient {
     private Pattern invalidUrlPattern = null;
-    private boolean allowCustomSchema = false;
 
     public BrowserClient() {
         this(null);
@@ -37,12 +36,7 @@ public class BrowserClient extends WebViewClient {
             invalidUrlPattern = Pattern.compile(invalidUrlRegex);
         } else {
             invalidUrlPattern = null;
-    }
-    }
-
-    public BrowserClient(boolean allowCustomSchema) {
-        super();
-        this.allowCustomSchema = allowCustomSchema;
+        }
     }
 
     @Override
