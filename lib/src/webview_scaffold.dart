@@ -125,7 +125,7 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
               appCacheEnabled: widget.appCacheEnabled,
               allowFileURLs: widget.allowFileURLs,
               geolocationEnabled: widget.geolocationEnabled,
-              normalizeTextSize: wudgetnormalizeTextSize,
+              normalizeTextSize: widget.normalizeTextSize,
             );
           } else {
             if (_rect != value) {
