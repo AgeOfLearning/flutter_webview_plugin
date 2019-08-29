@@ -116,6 +116,7 @@ class FlutterWebviewPlugin {
     bool allowFileURLs,
     bool geolocationEnabled,
     int minFontSize,
+    bool normalizeTextSize,
   }) async {
     final List<String> serializedCookies = cookies?.map((cookie) => cookie.toString())?.toList();
 
@@ -137,6 +138,7 @@ class FlutterWebviewPlugin {
       'allowFileURLs': allowFileURLs ?? false,
       'geolocationEnabled': geolocationEnabled ?? false,
       'minFontSize': minFontSize ?? 1,
+      'normalizeTextSize' : normalizeTextSize ?? false,
     };
 
     if (headers != null) {
