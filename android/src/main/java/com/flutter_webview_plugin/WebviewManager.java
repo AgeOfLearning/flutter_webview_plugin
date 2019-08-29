@@ -242,7 +242,7 @@ class WebviewManager {
         webView.getSettings().setAllowFileAccessFromFileURLs(allowFileURLs);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(allowFileURLs);
 //        if(textZoom) {
-            webView.getSettings().textZoom(100);
+            webView.getSettings().setTextZoom(100);
 //        }
         webView.getSettings().setMinimumFontSize(minFontSize);
         webView.getSettings().setMinimumLogicalFontSize(minFontSize);
