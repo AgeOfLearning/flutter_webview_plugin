@@ -102,7 +102,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         boolean geolocationEnabled = call.argument("geolocationEnabled");
         boolean enableAppScheme = call.argument("enableAppScheme");
         int minFontSize= call.argument("minFontSize");
-        int textZoom = 100; //call.argument("textZoom");
+        int textZoom = call.argument("textZoom");
 
         if (webViewManager == null || webViewManager.closed == true) {
             webViewManager = new WebviewManager(activity, enableAppScheme);

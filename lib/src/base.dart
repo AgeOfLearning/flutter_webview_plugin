@@ -139,7 +139,7 @@ class FlutterWebviewPlugin {
       'allowFileURLs': allowFileURLs ?? false,
       'geolocationEnabled': geolocationEnabled ?? false,
       'minFontSize': minFontSize ?? 1,
-      'textZoom' : textZoom,
+      'textZoom' : textZoom ?? -1,
     };
 
     if (headers != null) {
