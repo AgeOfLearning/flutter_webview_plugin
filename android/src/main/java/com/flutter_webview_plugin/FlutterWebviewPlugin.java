@@ -103,7 +103,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         boolean enableAppScheme = call.argument("enableAppScheme");
         int minFontSize= call.argument("minFontSize");
         int textZoom = call.argument("textZoom");
-
+        Log.d("flutter", textZoom + " <<<< text zoom");
         if (webViewManager == null || webViewManager.closed == true) {
             webViewManager = new WebviewManager(activity, enableAppScheme);
         }
