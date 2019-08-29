@@ -97,6 +97,7 @@ class FlutterWebviewPlugin {
   ///     Allow local files on iOs > 9.0
   /// - [scrollBar]: enable or disable scrollbar
   /// - [minFontSize]: Android only: set minimum font size
+  /// - [normalizeTextSize]: Android only: normalize the font size to disregard os settings.
   Future<Null> launch(String url, {
     Map<String, String> headers,
     bool withJavascript,
@@ -138,7 +139,7 @@ class FlutterWebviewPlugin {
       'allowFileURLs': allowFileURLs ?? false,
       'geolocationEnabled': geolocationEnabled ?? false,
       'minFontSize': minFontSize ?? 1,
-      'normalizeTextSize' : normalizeTextSize ?? false,
+      'normalizeTextSize': normalizeTextSize ?? false,
     };
 
     if (headers != null) {
