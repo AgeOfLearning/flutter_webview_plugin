@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.view.Display;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Map;
