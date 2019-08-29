@@ -102,7 +102,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         boolean geolocationEnabled = call.argument("geolocationEnabled");
         boolean enableAppScheme = call.argument("enableAppScheme");
         int minFontSize= call.argument("minFontSize");
-        boolean normalizeTextSize = call.argument("normalizeTextSize");
+        int textZoom = call.argument("textZoom");
 
         if (webViewManager == null || webViewManager.closed == true) {
             webViewManager = new WebviewManager(activity, enableAppScheme);
@@ -128,7 +128,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 allowFileURLs,
                 geolocationEnabled,
                 minFontSize,
-                normalizeTextSize
+                textZoom
         );
         result.success(null);
     }

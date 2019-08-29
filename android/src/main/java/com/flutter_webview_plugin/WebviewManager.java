@@ -227,7 +227,7 @@ class WebviewManager {
             boolean allowFileURLs,
             boolean geolocationEnabled,
             int minFontSize,
-            boolean normalizeTextSize
+            int textZoom
     ) {
         webView.getSettings().setJavaScriptEnabled(withJavascript);
         webView.getSettings().setBuiltInZoomControls(withZoom);
@@ -241,8 +241,8 @@ class WebviewManager {
 
         webView.getSettings().setAllowFileAccessFromFileURLs(allowFileURLs);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(allowFileURLs);
-        if(normalizeTextSize != null && normalizeTextSize) {
-            webView.getSettings().setTextSize(WebSettings.TextSize.NORMAL);
+        if(textZoom) {
+            webView.getSettings().textZoom(textZoom);
         }
         webView.getSettings().setMinimumFontSize(minFontSize);
         webView.getSettings().setMinimumLogicalFontSize(minFontSize);
