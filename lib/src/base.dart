@@ -154,7 +154,6 @@ class FlutterWebviewPlugin {
         'height': rect.height,
       };
     }
-    print(args);
     await _channel.invokeMethod('launch', args);
   }
 
