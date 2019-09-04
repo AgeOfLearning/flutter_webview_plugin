@@ -7,7 +7,6 @@ import android.graphics.Point;
 import android.view.Display;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -102,10 +101,8 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         boolean allowFileURLs = call.argument("allowFileURLs");
         boolean geolocationEnabled = call.argument("geolocationEnabled");
         boolean enableAppScheme = call.argument("enableAppScheme");
-        Log.d("flutter", call.arguments + " <<<< text zoom");
         int minFontSize= call.argument("minFontSize");
         int textZoom = call.argument("textZoom");
-        Log.d("flutter", textZoom + " <<<< text zoom");
         if (webViewManager == null || webViewManager.closed == true) {
             webViewManager = new WebviewManager(activity, enableAppScheme);
         }

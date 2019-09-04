@@ -97,7 +97,7 @@ class FlutterWebviewPlugin {
   ///     Allow local files on iOs > 9.0
   /// - [scrollBar]: enable or disable scrollbar
   /// - [minFontSize]: Android only: set minimum font size
-  /// - [normalizeTextSize]: Android only: normalize the font size to disregard os settings.
+  /// - [textZoom]: Android only: Assign to set the text zoom to a percent. 100 is 100%.
   Future<Null> launch(String url, {
     Map<String, String> headers,
     bool withJavascript,
