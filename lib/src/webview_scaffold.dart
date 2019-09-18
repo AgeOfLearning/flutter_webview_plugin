@@ -32,7 +32,8 @@ class WebviewScaffold extends StatefulWidget {
     this.hidden = false,
     this.initialChild,
     this.allowFileURLs,
-    this.geolocationEnabled
+    this.geolocationEnabled,
+    this.textZoom,
   }) : super(key: key);
 
   final PreferredSizeWidget appBar;
@@ -57,6 +58,7 @@ class WebviewScaffold extends StatefulWidget {
   final Widget initialChild;
   final bool allowFileURLs;
   final bool geolocationEnabled;
+  final int textZoom;
 
   @override
   _WebviewScaffoldState createState() => _WebviewScaffoldState();
@@ -122,7 +124,8 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
               supportMultipleWindows: widget.supportMultipleWindows,
               appCacheEnabled: widget.appCacheEnabled,
               allowFileURLs: widget.allowFileURLs,
-              geolocationEnabled: widget.geolocationEnabled
+              geolocationEnabled: widget.geolocationEnabled,
+              textZoom: widget.textZoom,
             );
           } else {
             if (_rect != value) {
