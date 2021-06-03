@@ -99,6 +99,8 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         Map<String, String> headers = call.argument("headers");
         boolean scrollBar = call.argument("scrollBar");
         boolean allowFileURLs = call.argument("allowFileURLs");
+        boolean useWideViewPort = call.argument("useWideViewPort");
+        String invalidUrlRegex = call.argument("invalidUrlRegex");
         boolean geolocationEnabled = call.argument("geolocationEnabled");
         boolean enableAppScheme = call.argument("enableAppScheme");
         int minFontSize= call.argument("minFontSize");
@@ -125,6 +127,8 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 supportMultipleWindows,
                 appCacheEnabled,
                 allowFileURLs,
+                useWideViewPort,
+                invalidUrlRegex,
                 geolocationEnabled,
                 minFontSize,
                 textZoom
