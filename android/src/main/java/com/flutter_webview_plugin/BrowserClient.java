@@ -86,17 +86,27 @@ public class BrowserClient extends WebViewClient {
         return isInvalid;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        // returning true causes the current WebView to abort loading the URL,
-        // while returning false causes the WebView to continue loading the URL as usual.
-        boolean isInvalid = checkInvalidUrl(url);
-        Map<String, Object> data = new HashMap<>();
-        data.put("url", url);
-        data.put("type", isInvalid ? "abortLoad" : "shouldStart");
+        if (allowCustomSchema && (!url.startsWith("http") && !url.startsWith("file") && !url.startsWith("about")) ) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("url", url);
 
-        FlutterWebviewPlugin.channel.invokeMethod("onState", data);
-        return isInvalid;
+            FlutterWebviewPlugin.channel.invokeMethod("onUrlChanged", data);
+            return true;
+        }
+        else {
+            // returning true causes the current WebView to abort loading the URL,
+            // while returning false causes the WebView to continue loading the URL as usual.
+            boolean isInvalid = checkInvalidUrl(url);
+            Map<String, Object> data = new HashMap<>();
+            data.put("url", url);
+            data.put("type", isInvalid ? "abortLoad" : "shouldStart");
+
+            FlutterWebviewPlugin.channel.invokeMethod("onState", data);
+            return isInvalid;
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -127,18 +137,18 @@ public class BrowserClient extends WebViewClient {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (allowCustomSchema && (!url.startsWith("http") && !url.startsWith("file") && !url.startsWith("about")) ) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("url", url);
+    // @SuppressWarnings("deprecation")
+    // @Override
+    // public boolean shouldOverrideUrlLoading(WebView view, String url) {
+    //     if (allowCustomSchema && (!url.startsWith("http") && !url.startsWith("file") && !url.startsWith("about")) ) {
+    //         Map<String, Object> data = new HashMap<>();
+    //         data.put("url", url);
 
-            FlutterWebviewPlugin.channel.invokeMethod("onUrlChanged", data);
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    //         FlutterWebviewPlugin.channel.invokeMethod("onUrlChanged", data);
+    //         return true;
+    //     }
+    //     else {
+    //         return false;
+    //     }
+    // }
 }
