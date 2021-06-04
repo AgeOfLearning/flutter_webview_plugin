@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Cookie;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class WebviewScaffold extends StatefulWidget {
     this.clearCache,
     this.clearCookies,
     this.enableAppScheme,
+    this.cookies,
     this.userAgent,
     this.primary = true,
     this.persistentFooterButtons,
@@ -32,7 +34,8 @@ class WebviewScaffold extends StatefulWidget {
     this.allowFileURLs,
     this.resizeToAvoidBottomInset = false,
     this.invalidUrlRegex,
-    this.geolocationEnabled
+    this.geolocationEnabled,
+    this.textZoom,
   }) : super(key: key);
 
   final PreferredSizeWidget appBar;
@@ -42,6 +45,7 @@ class WebviewScaffold extends StatefulWidget {
   final bool clearCache;
   final bool clearCookies;
   final bool enableAppScheme;
+  final List<Cookie> cookies;
   final String userAgent;
   final bool primary;
   final List<Widget> persistentFooterButtons;
@@ -58,6 +62,7 @@ class WebviewScaffold extends StatefulWidget {
   final bool resizeToAvoidBottomInset;
   final String invalidUrlRegex;
   final bool geolocationEnabled;
+  final int textZoom;
 
   @override
   _WebviewScaffoldState createState() => _WebviewScaffoldState();
@@ -122,6 +127,7 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
               clearCookies: widget.clearCookies,
               hidden: widget.hidden,
               enableAppScheme: widget.enableAppScheme,
+              cookies: widget.cookies,
               userAgent: widget.userAgent,
               rect: _rect,
               withZoom: widget.withZoom,
@@ -132,7 +138,8 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
               appCacheEnabled: widget.appCacheEnabled,
               allowFileURLs: widget.allowFileURLs,
               invalidUrlRegex: widget.invalidUrlRegex,
-              geolocationEnabled: widget.geolocationEnabled
+              geolocationEnabled: widget.geolocationEnabled,
+              textZoom: widget.textZoom,
             );
           } else {
             if (_rect != value) {

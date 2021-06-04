@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Cookie, Platform;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -85,6 +86,7 @@ class FlutterWebviewPlugin {
   /// - [rect]: show in rect, fullscreen if null
   /// - [enableAppScheme]: false will enable all schemes, true only for httt/https/about
   ///     android: Not implemented yet
+  /// - [cookies] An initial list of cookies to populate the Webview's cookiejar
   /// - [userAgent]: set the User-Agent of WebView
   /// - [withZoom]: enable zoom on webview
   /// - [withLocalStorage] enable localStorage API on Webview
@@ -97,6 +99,8 @@ class FlutterWebviewPlugin {
   /// - [invalidUrlRegex] is the regular expression of URLs that web view shouldn't load.
   /// For example, when webview is redirected to a specific URL, you want to intercept
   /// this process by stopping loading this URL and replacing webview by another screen.
+  /// - [minFontSize]: Android only: set minimum font size
+  /// - [textZoom]: Android only: Assign to set the text zoom to a percent. 100 is 100%.
   Future<Null> launch(String url, {
     Map<String, String> headers,
     bool withJavascript,
@@ -105,6 +109,7 @@ class FlutterWebviewPlugin {
     bool hidden,
     bool enableAppScheme,
     Rect rect,
+    List<Cookie> cookies,
     String userAgent,
     bool withZoom,
     bool withLocalStorage,
@@ -116,7 +121,11 @@ class FlutterWebviewPlugin {
     bool useWideViewPort,
     String invalidUrlRegex,
     bool geolocationEnabled,
+    int minFontSize,
+    int textZoom,
   }) async {
+    final List<String> serializedCookies = cookies?.map((cookie) => cookie.toString())?.toList();
+
     final args = <String, dynamic>{
       'url': url,
       'withJavascript': withJavascript ?? true,
@@ -124,6 +133,7 @@ class FlutterWebviewPlugin {
       'hidden': hidden ?? false,
       'clearCookies': clearCookies ?? false,
       'enableAppScheme': enableAppScheme ?? true,
+      'cookies': serializedCookies,
       'userAgent': userAgent,
       'withZoom': withZoom ?? false,
       'withLocalStorage': withLocalStorage ?? true,
@@ -135,6 +145,8 @@ class FlutterWebviewPlugin {
       'useWideViewPort': useWideViewPort ?? false,
       'invalidUrlRegex': invalidUrlRegex,
       'geolocationEnabled': geolocationEnabled ?? false,
+      'minFontSize': minFontSize ?? 1,
+      'textZoom' : textZoom ?? -1,
     };
 
     if (headers != null) {
@@ -156,6 +168,12 @@ class FlutterWebviewPlugin {
   Future<String> evalJavascript(String code) async {
     final res = await _channel.invokeMethod('eval', {'code': code});
     return res;
+  }
+
+  ///Get userAgent
+  Future<String> getUserAgent() async {
+    final String userAgent = await _channel.invokeMethod('getUserAgent');
+    return userAgent;
   }
 
   /// Close the Webview

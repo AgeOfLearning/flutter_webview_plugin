@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 public class BrowserClient extends WebViewClient {
     private Pattern invalidUrlPattern = null;
+    private boolean allowCustomSchema = false;
 
     public BrowserClient() {
         this(null);
@@ -38,6 +39,15 @@ public class BrowserClient extends WebViewClient {
             invalidUrlPattern = null;
         }
     }
+
+    public BrowserClient(boolean allowCustomSchema) {
+        super();
+        this.allowCustomSchema = allowCustomSchema;
+    }
+
+
+
+
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -76,19 +86,6 @@ public class BrowserClient extends WebViewClient {
         return isInvalid;
     }
 
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        // returning true causes the current WebView to abort loading the URL,
-        // while returning false causes the WebView to continue loading the URL as usual.
-        boolean isInvalid = checkInvalidUrl(url);
-        Map<String, Object> data = new HashMap<>();
-        data.put("url", url);
-        data.put("type", isInvalid ? "abortLoad" : "shouldStart");
-
-        FlutterWebviewPlugin.channel.invokeMethod("onState", data);
-        return isInvalid;
-    }
-
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
@@ -114,6 +111,29 @@ public class BrowserClient extends WebViewClient {
         } else {
             Matcher matcher = invalidUrlPattern.matcher(url);
             return matcher.lookingAt();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        if (allowCustomSchema && (!url.startsWith("http") && !url.startsWith("file") && !url.startsWith("about")) ) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("url", url);
+
+            FlutterWebviewPlugin.channel.invokeMethod("onUrlChanged", data);
+            return true;
+        }
+        else {
+            // returning true causes the current WebView to abort loading the URL,
+            // while returning false causes the WebView to continue loading the URL as usual.
+            boolean isInvalid = checkInvalidUrl(url);
+            Map<String, Object> data = new HashMap<>();
+            data.put("url", url);
+            data.put("type", isInvalid ? "abortLoad" : "shouldStart");
+
+            FlutterWebviewPlugin.channel.invokeMethod("onState", data);
+            return isInvalid;
         }
     }
 }

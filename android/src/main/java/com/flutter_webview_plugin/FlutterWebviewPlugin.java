@@ -1,16 +1,14 @@
 package com.flutter_webview_plugin;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.view.Display;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.webkit.CookieManager;
-import android.webkit.ValueCallback;
-import android.os.Build;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
@@ -77,6 +75,9 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
             case "cleanCookies":
                 cleanCookies(call, result);
                 break;
+            case "getUserAgent":
+                getUserAgent(call, result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -86,6 +87,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
     private void openUrl(MethodCall call, MethodChannel.Result result) {
         boolean hidden = call.argument("hidden");
         String url = call.argument("url");
+        ArrayList<String> cookies = call.argument("cookies");
         String userAgent = call.argument("userAgent");
         boolean withJavascript = call.argument("withJavascript");
         boolean clearCache = call.argument("clearCache");
@@ -100,9 +102,11 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         boolean useWideViewPort = call.argument("useWideViewPort");
         String invalidUrlRegex = call.argument("invalidUrlRegex");
         boolean geolocationEnabled = call.argument("geolocationEnabled");
-
+        boolean enableAppScheme = call.argument("enableAppScheme");
+        int minFontSize= call.argument("minFontSize");
+        int textZoom = call.argument("textZoom");
         if (webViewManager == null || webViewManager.closed == true) {
-            webViewManager = new WebviewManager(activity);
+            webViewManager = new WebviewManager(activity, enableAppScheme);
         }
 
         FrameLayout.LayoutParams params = buildLayoutParams(call);
@@ -113,6 +117,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 clearCache,
                 hidden,
                 clearCookies,
+                cookies,
                 userAgent,
                 url,
                 headers,
@@ -124,7 +129,9 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
                 allowFileURLs,
                 useWideViewPort,
                 invalidUrlRegex,
-                geolocationEnabled
+                geolocationEnabled,
+                minFontSize,
+                textZoom
         );
         result.success(null);
     }
@@ -207,6 +214,12 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
         }
     }
 
+    private void getUserAgent(MethodCall call, final MethodChannel.Result result) {
+        //creating a new instance to access useragent without loading a hidden webview url
+        String userAgent = new WebView(activity).getSettings().getUserAgentString();
+        result.success(userAgent);
+    }
+
     private void resize(MethodCall call, final MethodChannel.Result result) {
         if (webViewManager != null) {
             FrameLayout.LayoutParams params = buildLayoutParams(call);
@@ -230,16 +243,7 @@ public class FlutterWebviewPlugin implements MethodCallHandler, PluginRegistry.A
     }
 
     private void cleanCookies(MethodCall call, final MethodChannel.Result result) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
-                @Override
-                public void onReceiveValue(Boolean aBoolean) {
-
-                }
-            });
-        } else {
-            CookieManager.getInstance().removeAllCookie();
-        }
+        WebviewManager.clearCookies();
         result.success(null);
     }
 
