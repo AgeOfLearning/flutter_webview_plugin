@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 const _kChannel = 'flutter_webview_plugin';
 
 // TODO: more general state for iOS/android
-enum WebViewState { shouldStart, startLoad, finishLoad }
+enum WebViewState { shouldStart, startLoad, finishLoad, abortLoad }
 
 // TODO: use an id by webview to be able to manage multiple webview
 
@@ -80,7 +80,6 @@ class FlutterWebviewPlugin {
   /// Start the Webview with [url]
   /// - [headers] specify additional HTTP headers
   /// - [withJavascript] enable Javascript or not for the Webview
-  ///     iOS WebView: Not implemented yet
   /// - [clearCache] clear the cache of the Webview
   /// - [clearCookies] clear all cookies of the Webview
   /// - [hidden] not show
@@ -96,6 +95,10 @@ class FlutterWebviewPlugin {
   /// - [withLocalUrl]: allow url as a local path
   ///     Allow local files on iOs > 9.0
   /// - [scrollBar]: enable or disable scrollbar
+  /// - [supportMultipleWindows] enable multiple windows support in Android
+  /// - [invalidUrlRegex] is the regular expression of URLs that web view shouldn't load.
+  /// For example, when webview is redirected to a specific URL, you want to intercept
+  /// this process by stopping loading this URL and replacing webview by another screen.
   /// - [minFontSize]: Android only: set minimum font size
   /// - [textZoom]: Android only: Assign to set the text zoom to a percent. 100 is 100%.
   Future<Null> launch(String url, {
@@ -115,6 +118,8 @@ class FlutterWebviewPlugin {
     bool supportMultipleWindows,
     bool appCacheEnabled,
     bool allowFileURLs,
+    bool useWideViewPort,
+    String invalidUrlRegex,
     bool geolocationEnabled,
     int minFontSize,
     int textZoom,
@@ -137,6 +142,8 @@ class FlutterWebviewPlugin {
       'supportMultipleWindows': supportMultipleWindows ?? false,
       'appCacheEnabled': appCacheEnabled ?? false,
       'allowFileURLs': allowFileURLs ?? false,
+      'useWideViewPort': useWideViewPort ?? false,
+      'invalidUrlRegex': invalidUrlRegex,
       'geolocationEnabled': geolocationEnabled ?? false,
       'minFontSize': minFontSize ?? 1,
       'textZoom' : textZoom ?? -1,
@@ -252,6 +259,9 @@ class WebViewStateChanged {
         break;
       case 'finishLoad':
         t = WebViewState.finishLoad;
+        break;
+      case 'abortLoad':
+        t = WebViewState.abortLoad;
         break;
     }
     return WebViewStateChanged(t, map['url'], map['navigationType']);

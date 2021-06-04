@@ -1,5 +1,7 @@
 package com.flutter_webview_plugin;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +17,6 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -76,14 +77,16 @@ class WebviewManager {
     boolean closed = false;
     WebView webView;
     Activity activity;
+    BrowserClient webViewClient;
     ResultHandler resultHandler;
 
     WebviewManager(final Activity activity, boolean enableAppScheme) {
         this.webView = new ObservableWebView(activity);
         this.activity = activity;
         this.resultHandler = new ResultHandler();
-        WebViewClient webViewClient = new BrowserClient(enableAppScheme);
 
+        // WebViewClient webViewClient = new BrowserClient(enableAppScheme);
+        webViewClient = new BrowserClient(enableAppScheme);
 
         webView.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -225,6 +228,8 @@ class WebviewManager {
             boolean supportMultipleWindows,
             boolean appCacheEnabled,
             boolean allowFileURLs,
+            boolean useWideViewPort,
+            String invalidUrlRegex,
             boolean geolocationEnabled,
             int minFontSize,
             int textZoom
@@ -247,6 +252,10 @@ class WebviewManager {
         webView.getSettings().setMinimumFontSize(minFontSize);
         webView.getSettings().setMinimumLogicalFontSize(minFontSize);
 
+        webView.getSettings().setUseWideViewPort(useWideViewPort);
+
+        webViewClient.updateInvalidUrlRegex(invalidUrlRegex);
+
         if (geolocationEnabled) {
             webView.getSettings().setGeolocationEnabled(true);
             webView.setWebChromeClient(new WebChromeClient() {
@@ -266,7 +275,7 @@ class WebviewManager {
         }
 
         if (hidden) {
-            webView.setVisibility(View.INVISIBLE);
+            webView.setVisibility(View.GONE);
         }
 
         if (clearCookies) {
@@ -367,7 +376,7 @@ class WebviewManager {
     }
     void hide(MethodCall call, MethodChannel.Result result) {
         if (webView != null) {
-            webView.setVisibility(View.INVISIBLE);
+            webView.setVisibility(View.GONE);
         }
     }
     void show(MethodCall call, MethodChannel.Result result) {

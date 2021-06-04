@@ -32,6 +32,8 @@ class WebviewScaffold extends StatefulWidget {
     this.hidden = false,
     this.initialChild,
     this.allowFileURLs,
+    this.resizeToAvoidBottomInset = false,
+    this.invalidUrlRegex,
     this.geolocationEnabled,
     this.textZoom,
   }) : super(key: key);
@@ -57,6 +59,8 @@ class WebviewScaffold extends StatefulWidget {
   final bool hidden;
   final Widget initialChild;
   final bool allowFileURLs;
+  final bool resizeToAvoidBottomInset;
+  final String invalidUrlRegex;
   final bool geolocationEnabled;
   final int textZoom;
 
@@ -70,10 +74,18 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
   Timer _resizeTimer;
   StreamSubscription<WebViewStateChanged> _onStateChanged;
 
+  var _onDestroy;
+
   @override
   void initState() {
     super.initState();
     webviewReference.close();
+
+    _onDestroy = webviewReference.onDestroy.listen((_) {
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    });
 
     if (widget.hidden) {
       _onStateChanged = webviewReference.onStateChanged.listen((WebViewStateChanged state) {
@@ -87,6 +99,7 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
   @override
   void dispose() {
     super.dispose();
+    _onDestroy?.cancel();
     _resizeTimer?.cancel();
     webviewReference.close();
     if (widget.hidden) {
@@ -99,7 +112,7 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: widget.appBar,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
       persistentFooterButtons: widget.persistentFooterButtons,
       bottomNavigationBar: widget.bottomNavigationBar,
       body: _WebviewPlaceholder(
@@ -124,6 +137,7 @@ class _WebviewScaffoldState extends State<WebviewScaffold> {
               supportMultipleWindows: widget.supportMultipleWindows,
               appCacheEnabled: widget.appCacheEnabled,
               allowFileURLs: widget.allowFileURLs,
+              invalidUrlRegex: widget.invalidUrlRegex,
               geolocationEnabled: widget.geolocationEnabled,
               textZoom: widget.textZoom,
             );
