@@ -12,10 +12,11 @@ String selectedUrl = 'https://flutter.io';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  final flutterWebViewPlugin = FlutterWebviewPlugin();
 
   @override
   Widget build(BuildContext context) {
+  final flutterWebViewPlugin = FlutterWebviewPlugin();
+
     return MaterialApp(
       title: 'Flutter WebView Demo',
       theme: ThemeData(
